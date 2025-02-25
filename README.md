@@ -12,9 +12,7 @@ El **Auth Service** es un microservicio dentro del sistema **CalendarUgr** encar
 ## Requisitos previos
 Para ejecutar este servicio, es necesario configurar las siguientes variables de entorno:
 
-- `DB_USERNAME`: Nombre de usuario de la base de datos.
-- `DB_PASSWORD`: Contraseña de la base de datos.
-- `DB_URL`: URL de conexión a la base de datos.
+- `SECRET_KEY` : Secret key del jwt.
 
 ## Instalación y ejecución
 1. Clonar el repositorio:
