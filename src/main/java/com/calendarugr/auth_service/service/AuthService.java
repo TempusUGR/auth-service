@@ -29,6 +29,10 @@ public class AuthService {
 
     public Optional<JwtResponse> authenticate(String email, String password) {
 
+        if (!checkUGREmail(email)) {
+            return Optional.empty();
+        }
+
         User user = null;
 
         try {
@@ -50,26 +54,23 @@ public class AuthService {
         }
 
         if (user == null) {
-            System.out.println("Usuario no encontrado");
             return Optional.empty();
         }
 
         if (!PasswordUtil.matches(password, user.getPassword())) {
-            System.out.println("Contraseña incorrecta");
             return Optional.empty();
         }
 
-        // 1 día de expiración
-        String accessToken = generateToken(user.getNickname(), "USER", 86400000);
-        // 1 semana de expiración
-        String refreshToken = generateToken(user.getNickname(), "USER", 604800000);
+        // 1 day
+        String accessToken = generateToken(user.getNickname(), user.getRole().getName(), 86400000);
+        // 1 week
+        String refreshToken = generateToken(user.getNickname(), user.getRole().getName(), 604800000);
 
         return Optional.of(new JwtResponse(accessToken, refreshToken));
 
     }
 
     public Optional<JwtResponse> refresh(String refreshToken) {
-        System.out.println("Refrescando token");
 
         try {
             // Validar y extraer los claims del refresh token
@@ -79,11 +80,11 @@ public class AuthService {
                     .parseClaimsJws(refreshToken)
                     .getBody();
 
-            // Extraer el usuario
             String nickname = claims.getSubject();
 
-            // Generar un nuevo access token
-            String newAccessToken = generateToken(nickname, "USER", 86400000);
+            String role = claims.get("role", String.class);
+
+            String newAccessToken = generateToken(nickname, role, 86400000);
 
             return Optional.of(new JwtResponse(newAccessToken, refreshToken));
 
@@ -103,6 +104,10 @@ public class AuthService {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private Boolean checkUGREmail (String email) {
+        return email.endsWith("@ugr.es");
     }
 
 }

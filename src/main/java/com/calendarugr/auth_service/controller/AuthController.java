@@ -3,7 +3,6 @@ package com.calendarugr.auth_service.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Lettuce.Cluster.Refresh;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,7 @@ public class AuthController {
         Optional<JwtResponse> jwtResponse = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         if (jwtResponse.isEmpty()) {
             // Add a error message to the response
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "El usuario no fue encontrado" );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "User not found");
         }
         return ResponseEntity.ok(jwtResponse.get());
     }
