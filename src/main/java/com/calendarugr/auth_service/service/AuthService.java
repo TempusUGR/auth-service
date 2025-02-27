@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.calendarugr.auth_service.PasswordUtil;
+import com.calendarugr.auth_service.config.PasswordUtil;
 import com.calendarugr.auth_service.models.JwtResponse;
 import com.calendarugr.auth_service.models.User;
 
@@ -62,9 +62,9 @@ public class AuthService {
         }
 
         // 1 day
-        String accessToken = generateToken(user.getNickname(), user.getRole().getName(), 86400000);
+        String accessToken = generateToken(user.getId().toString(), user.getRole().getName(), 86400000);
         // 1 week
-        String refreshToken = generateToken(user.getNickname(), user.getRole().getName(), 604800000);
+        String refreshToken = generateToken(user.getId().toString(), user.getRole().getName(), 604800000);
 
         return Optional.of(new JwtResponse(accessToken, refreshToken));
 
@@ -80,11 +80,11 @@ public class AuthService {
                     .parseClaimsJws(refreshToken)
                     .getBody();
 
-            String nickname = claims.getSubject();
+            String id = claims.getSubject();
 
             String role = claims.get("role", String.class);
 
-            String newAccessToken = generateToken(nickname, role, 86400000);
+            String newAccessToken = generateToken(id, role, 86400000);
 
             return Optional.of(new JwtResponse(newAccessToken, refreshToken));
 
@@ -94,11 +94,12 @@ public class AuthService {
         }
     }
 
-    private String generateToken(String nickname, String role, long expiration) {
+    private String generateToken(String id, String role, long expiration) {
 
         Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
-                .setSubject(nickname)
+        .setHeaderParam("typ", "JWT")
+                .setSubject(id.toString())
                 .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))

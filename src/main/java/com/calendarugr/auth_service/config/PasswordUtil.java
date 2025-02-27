@@ -1,4 +1,4 @@
-package com.calendarugr.auth_service;
+package com.calendarugr.auth_service.config;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
