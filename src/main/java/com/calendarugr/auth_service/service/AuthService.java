@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.calendarugr.auth_service.config.PasswordUtil;
-import com.calendarugr.auth_service.models.JwtResponse;
-import com.calendarugr.auth_service.models.User;
+import com.calendarugr.auth_service.dtos.JwtResponseDTO;
+import com.calendarugr.auth_service.dtos.UserDTO;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,13 +27,16 @@ public class AuthService {
     private final String userServiceUrl = "http://localhost:8081/user";
     private final String SECRET_KEY = System.getProperty("JWT_SECRET");
 
-    public Optional<JwtResponse> authenticate(String email, String password) {
+    public Optional<JwtResponseDTO> authenticate(String email, String password) {
+
+        System.out.println("Autenticando usuario con email: " + email);
 
         if (!checkUGREmail(email)) {
+            System.out.println("Email no pertenece a la UGR");
             return Optional.empty();
         }
 
-        User user = null;
+        UserDTO user = null;
 
         try {
             System.out.println("Consultando al servicio de usuarios: " + userServiceUrl + "/email/" + email);
@@ -42,7 +45,7 @@ public class AuthService {
                     .get()
                     .uri(userServiceUrl + "/email/{email}", email)
                     .retrieve()
-                    .bodyToMono(User.class)
+                    .bodyToMono(UserDTO.class)
                     .block();
 
             System.out.println("Respuesta del servicio de usuarios: "
@@ -66,11 +69,11 @@ public class AuthService {
         // 1 week
         String refreshToken = generateToken(user.getId().toString(), user.getRole().getName(), 604800000);
 
-        return Optional.of(new JwtResponse(accessToken, refreshToken));
+        return Optional.of(new JwtResponseDTO(accessToken, refreshToken));
 
     }
 
-    public Optional<JwtResponse> refresh(String refreshToken) {
+    public Optional<JwtResponseDTO> refresh(String refreshToken) {
 
         try {
             // Validar y extraer los claims del refresh token
@@ -86,7 +89,7 @@ public class AuthService {
 
             String newAccessToken = generateToken(id, role, 86400000);
 
-            return Optional.of(new JwtResponse(newAccessToken, refreshToken));
+            return Optional.of(new JwtResponseDTO(newAccessToken, refreshToken));
 
         } catch (Exception e) {
             System.err.println("Error al refrescar el token: " + e.getMessage());
@@ -108,7 +111,7 @@ public class AuthService {
     }
 
     private Boolean checkUGREmail (String email) {
-        return email.endsWith("@ugr.es");
+        return ( email.endsWith("@ugr.es") || email.endsWith("@correo.ugr.es") );
     }
 
 }

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.calendarugr.auth_service.models.JwtResponse;
-import com.calendarugr.auth_service.models.LoginRequest;
-import com.calendarugr.auth_service.models.RefreshTokenRequest;
+import com.calendarugr.auth_service.dtos.JwtResponseDTO;
+import com.calendarugr.auth_service.dtos.LoginRequestDTO;
+import com.calendarugr.auth_service.dtos.RefreshTokenRequestDTO;
 import com.calendarugr.auth_service.service.AuthService;
 
 @RestController
@@ -23,18 +23,18 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        Optional<JwtResponse> jwtResponse = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
+        Optional<JwtResponseDTO> jwtResponse = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         if (jwtResponse.isEmpty()) {
             // Add a error message to the response
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "Usuario no encontrado");
         }
         return ResponseEntity.ok(jwtResponse.get());
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequest request) {
-        Optional<JwtResponse> jwtResponse = authService.refresh(request.getRefreshToken());
+    public ResponseEntity<?> refresh(@RequestBody RefreshTokenRequestDTO request) {
+        Optional<JwtResponseDTO> jwtResponse = authService.refresh(request.getRefreshToken());
 
     if (jwtResponse.isEmpty()) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El token de refresco no es válido");

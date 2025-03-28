@@ -1,4 +1,4 @@
-package com.calendarugr.auth_service.models;
+package com.calendarugr.auth_service.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class LoginRequest {
+public class RefreshTokenRequestDTO {
 
-    private String email;
-    private String password;
+    private String refreshToken;
 
 }

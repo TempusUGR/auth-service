@@ -1,4 +1,4 @@
-package com.calendarugr.auth_service.models;
+package com.calendarugr.auth_service.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class User {
+public class UserDTO {
     
     private Long id;
 
@@ -16,5 +16,5 @@ public class User {
 
     private String password;
 
-    private Role role;
+    private RoleDTO role;
 }
