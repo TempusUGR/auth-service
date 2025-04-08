@@ -1,4 +1,4 @@
-package com.calendarugr.auth_service;
+package com.calendarugr.auth_service.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
