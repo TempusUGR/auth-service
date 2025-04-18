@@ -27,7 +27,7 @@ public class AuthController {
         Optional<JwtResponseDTO> jwtResponse = authService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         if (jwtResponse.isEmpty()) {
             // Add a error message to the response
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "Usuario no encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body( "Usuario no encontrado o contraseña incorrecta");
         }
         return ResponseEntity.ok(jwtResponse.get());
     }

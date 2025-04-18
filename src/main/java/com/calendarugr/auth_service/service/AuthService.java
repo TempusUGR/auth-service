@@ -24,7 +24,8 @@ public class AuthService {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
-    private final String userServiceUrl = "http://localhost:8081/user";
+    String url = "http://user-service/user";
+
     private final String SECRET_KEY = System.getProperty("JWT_SECRET");
 
     public Optional<JwtResponseDTO> authenticate(String email, String password) {
@@ -39,17 +40,17 @@ public class AuthService {
         UserDTO user = null;
 
         try {
-            System.out.println("Consultando al servicio de usuarios: " + userServiceUrl + "/email/" + email);
+            System.out.println("Consultando al servicio de usuarios: " + url + "/email/" + email);
 
             user = webClientBuilder.build()
                     .get()
-                    .uri(userServiceUrl + "/email/{email}", email)
+                    .uri(url + "/email/{email}", email)
                     .retrieve()
                     .bodyToMono(UserDTO.class)
                     .block();
 
             System.out.println("Respuesta del servicio de usuarios: "
-                    + (user != null ? user.toString() : "Usuario no encontrado"));
+                    + (user != null ? user.getEmail() : "Usuario no encontrado"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,6 +62,7 @@ public class AuthService {
         }
 
         if (!PasswordUtil.matches(password, user.getPassword())) {
+            System.out.println("Por la caras    ");
             return Optional.empty();
         }
 
