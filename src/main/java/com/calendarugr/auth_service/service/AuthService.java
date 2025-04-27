@@ -30,8 +30,6 @@ public class AuthService {
 
     public Optional<JwtResponseDTO> authenticate(String email, String password) {
 
-        System.out.println("Autenticando usuario con email: " + email);
-
         if (!checkUGREmail(email)) {
             System.out.println("Email no pertenece a la UGR");
             return Optional.empty();
@@ -40,7 +38,6 @@ public class AuthService {
         UserDTO user = null;
 
         try {
-            System.out.println("Consultando al servicio de usuarios: " + url + "/email/" + email);
 
             user = webClientBuilder.build()
                     .get()
@@ -48,9 +45,6 @@ public class AuthService {
                     .retrieve()
                     .bodyToMono(UserDTO.class)
                     .block();
-
-            System.out.println("Respuesta del servicio de usuarios: "
-                    + (user != null ? user.getEmail() : "Usuario no encontrado"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,7 +56,6 @@ public class AuthService {
         }
 
         if (!PasswordUtil.matches(password, user.getPassword())) {
-            System.out.println("Por la caras    ");
             return Optional.empty();
         }
 
