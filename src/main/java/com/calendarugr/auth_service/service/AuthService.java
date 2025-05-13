@@ -51,7 +51,7 @@ public class AuthService {
             return Optional.empty();
         }
 
-        if (user == null) {
+        if (user == null || user.getRole().getName() == "ROLE_INACTIVE") {
             return Optional.empty();
         }
 
