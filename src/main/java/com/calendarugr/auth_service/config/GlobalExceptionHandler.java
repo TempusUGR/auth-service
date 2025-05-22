@@ -6,6 +6,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
+
+import com.calendarugr.auth_service.dtos.ErrorResponseDTO;
+
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import io.jsonwebtoken.JwtException;
@@ -14,27 +17,32 @@ import io.jsonwebtoken.JwtException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<String> handleHttpClientErrorException(HttpClientErrorException e) {
-        return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+    public ResponseEntity<ErrorResponseDTO> handleHttpClientErrorException(HttpClientErrorException e) {
+        return ResponseEntity.status(e.getStatusCode())
+            .body(new ErrorResponseDTO("HttpClientErrorException", e.getResponseBodyAsString()));
     }
 
     @ExceptionHandler(JwtException.class)
-    public ResponseEntity<String> handleJwtException(JwtException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT token: " + e.getMessage());
+    public ResponseEntity<ErrorResponseDTO> handleJwtException(JwtException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(new ErrorResponseDTO("JwtException", "Invalid JWT token: " + e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid method argument: " + e.getMessage());
+    public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponseDTO("MethodArgumentNotValidException", "Invalid method argument: " + e.getMessage()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Malformed JSON request: " + e.getMessage());
+    public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponseDTO("HttpMessageNotReadableException", "Malformed JSON request: " + e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllUncaughtException(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+    public ResponseEntity<ErrorResponseDTO> handleAllUncaughtException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(new ErrorResponseDTO("Exception", "An unexpected error occurred: " + e.getMessage()));
     }
 }
