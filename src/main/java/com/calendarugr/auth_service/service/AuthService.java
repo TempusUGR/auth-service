@@ -47,7 +47,7 @@ public class AuthService {
                     .block();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
 
