@@ -19,7 +19,7 @@ El flujo de autenticación es el siguiente:
 
 Este servicio es **stateless**, lo que significa que no almacena ninguna información de sesión, delegando la validación del estado en los tokens JWT.
 
-![Flujo de Autenticación](https://i.imgur.com/L1n8pZl.png)
+![Image](https://github.com/user-attachments/assets/a77b3331-f548-4a48-b9d6-d352b5a50adb)
 
 ---
 
